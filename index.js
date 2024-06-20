@@ -7,20 +7,20 @@ dotenv.config(); // Load environment variables from .env file
 const connectionModule = require('./DataBase/connection');
 
 const UserRoute = require('./routes/userRouter');
-const DoctorRoute = require('./routes/doctorRouter');
+// const DoctorRoute = require('./routes/doctorRouter');
 const OrganizationRoute = require('./routes/organizationRouter');
-const AppointmentRoute = require('./routes/appointmentRouter');
-const RecordRoute = require('./routes/recordRouter');
+// const AppointmentRoute = require('./routes/appointmentRouter');
+// const RecordRoute = require('./routes/recordRouter');
 
 
 const MindMatters_app = express();
 MindMatters_app.use(cors());
 const PORT =  process.env.PORT || 3000;
 
-//====================================================================
-MindMatters_app.use(cors({                     
-  origin: 'http://localhost:3000',
-}));
+// //====================================================================
+// MindMatters_app.use(cors({                     
+//   origin: 'http://localhost:3000',
+// }));
 
 connectionModule.connect((err) => {
   if (err){
@@ -37,9 +37,9 @@ connectionModule.connect((err) => {
 //====================================================================
 MindMatters_app.use(express.json());
 MindMatters_app.use('/', UserRoute);
-MindMatters_app.use('/', DoctorRoute);
+// MindMatters_app.use('/', DoctorRoute);
 MindMatters_app.use('/', OrganizationRoute);
-MindMatters_app.use('/', AppointmentRoute);
-MindMatters_app.use('/', RecordRoute);
+// MindMatters_app.use('/', AppointmentRoute);
+// MindMatters_app.use('/', RecordRoute);
 
 
