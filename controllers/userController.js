@@ -97,6 +97,7 @@ async function feelingsProcessing(req, res) {
         text: feelingText
       });
       console.log(response.data.response);
+      console.log(response.data.lang);
 
       // Update NLPOutput in appdata table
       const sql_query_insertNLPOutput = `UPDATE appdata SET NLPOutput = ? WHERE userID = ?`;

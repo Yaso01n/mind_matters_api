@@ -3,16 +3,15 @@
 
 # In[2]:
 
-from flask import Flask, request, jsonify
 import torch
 import torch.optim
 import seaborn as sns
 from nltk.tokenize import word_tokenize
 from transformers import BertTokenizer, BertModel
-
+import gdown
+import os
 
 # In[12]:
-app = Flask(__name__)
 
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -62,8 +61,11 @@ class BERTClass(torch.nn.Module):
 # In[15]:
 
 
-def predict_label(raw_text, model, model_path):
-    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+def predict_label(raw_text, model, model_url):
+    local_model_path = 'bert.pt'
+    if not os.path.exists(local_model_path):
+        gdown.download(model_url, local_model_path, quiet=False)
+    model.load_state_dict(torch.load(local_model_path, map_location=device))
     model.eval()
     encoded_text = tokenizer.encode_plus(raw_text, max_length=MAX_LEN, add_special_tokens=True, return_token_type_ids=True, pad_to_max_length=True, return_attention_mask=True, return_tensors='pt',)
     input_ids = encoded_text['input_ids'].to(device)
@@ -75,6 +77,7 @@ def predict_label(raw_text, model, model_path):
     for idx, p in enumerate(output):
        if p == 1:
           print(f"Label: {target[idx]}")
+
     result_labels = [target[idx] for idx, p in enumerate(output) if p == 1]  # Return result for API
     return ', '.join(result_labels)  # Return result as a comma-separated string
 
@@ -100,22 +103,9 @@ def predict_label(raw_text, model, model_path):
 
 
 # In[ ]:
-@app.route('/predict', methods=['POST'])
-def predict():
-    text = request.json.get('text', '')
-    print(text)
-    if not text:
-        return jsonify({'error': 'No text provided'}), 400
-    
-    
+def english_prediction(text):
+    model_path="https://drive.google.com/uc?id=1zcABvZfmbO-Qps5TBK1gtWe2omfu7H-6"
     model = BERTClass().to(device)
     print('111')
-    result = predict_label(text,model,"bert.pt")
-    print(result)
-    return jsonify({'response': result})
-
-
-if __name__ == '__main__':
-    # app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
-
+    result = predict_label(text,model,model_path)
+    return result
