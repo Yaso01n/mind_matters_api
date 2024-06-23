@@ -144,7 +144,8 @@ function signinUser(req, res) {
         res.status(404).json({ message: `Incorrect email or password.` });
       } else {
         console.log(result[0]);
-        res.status(200).json({ key: 'user'});
+        console.log(result[0]['languages']); // Access the correct property name
+        res.status(200).json({ key: 'user', language: result[0]['languages'] });
       }
     });
   }
