@@ -152,16 +152,19 @@ function signinUser(req, res) {
   else{
      // Generate the SQL query to fetch user data based on email and password
      const sql_query = `SELECT * FROM doctor WHERE dUsername = ? AND doctorPassword = ?`;
+    
+     console.log('Executing SQL query:', sql_query);
+     console.log('With parameters:', [userEmail, userPassword]);
 
      connection.query(sql_query, [userEmail, userPassword], (err, result) => {
        if (err) throw err;
- 
+       console.log(result);
        if (result.length === 0) {
          console.log('no');
          res.status(404).json({ message: `Incorrect username or password.` });
        } else {
          console.log(result[0]);
-         res.status(200).json({ key: 'doctor'});
+         res.status(200).json({ key: 'doctor',language: result[0]['languages']});
        }
      });
   }
